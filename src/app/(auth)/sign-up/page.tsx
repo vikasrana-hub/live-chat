@@ -32,7 +32,7 @@ const Signup = () => {
     const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
         setIsSubmitting(true);
         try {
-            const response = await axios.post('/api/sign_up', data);
+            const _response = await axios.post('/api/sign_up', data);
             toast({
                 title: 'Success',
                 description: 'You have successfully signed up!',
