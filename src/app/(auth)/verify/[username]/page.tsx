@@ -53,9 +53,9 @@ function VerifyAccount() {
         description: "verification successful"
       })
       router.push('/sign-in')
-    } catch (error) {
+    } catch {
      
-      console.log(error)
+     
       toast({
         title: "Error",
         description: "Verification failed. Please try again.",
