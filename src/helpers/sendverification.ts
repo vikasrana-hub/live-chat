@@ -9,7 +9,7 @@ import { VerificationEmail } from "../../emails/verificationemails";
 export const resend = new Resend(process.env.RESEND_API)
 
 
-export async function POST(request: any) {
+export async function POST(request: Request) {
     try {
         // Parse the incoming request body
         const { email, username, verifyCode } = await request.json();
