@@ -20,32 +20,28 @@ function VideoChat() {
     socket.on("paired", (id: string) => {
       setPartnerId(id);
     });
-
-    socket.on("signal", async (data: SignalData) => {
+socket.on("signal", async (data: SignalData) => {
   if (!peerRef.current) return;
 
+  // Check if data.signal is a session description (offer/answer)
   if ("type" in data.signal) {
-    // It's an RTCSessionDescriptionInit (Offer/Answer)
-    const signal = data.signal as RTCSessionDescriptionInit;
-    
-    if (signal.type === "offer") {
-      await peerRef.current.setRemoteDescription(signal);
+    if (data.signal.type === "offer") {
+      await peerRef.current.setRemoteDescription(data.signal);
       const answer = await peerRef.current.createAnswer();
       await peerRef.current.setLocalDescription(answer);
       socket.emit("signal", { to: data.from, signal: peerRef.current.localDescription });
       processQueuedIceCandidates();
-    } else if (signal.type === "answer") {
-      await peerRef.current.setRemoteDescription(signal);
+    } else if (data.signal.type === "answer") {
+      await peerRef.current.setRemoteDescription(data.signal);
       processQueuedIceCandidates();
     }
-  } else if ("candidate" in data.signal) {
-    // It's an ICE candidate
-    const candidate = data.signal.candidate as RTCIceCandidateInit;
-    
+  } 
+  // Handle ICE candidates separately
+  else if ("candidate" in data.signal) {
     if (peerRef.current.remoteDescription) {
-      await peerRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+      await peerRef.current.addIceCandidate(new RTCIceCandidate(data.signal.candidate));
     } else {
-      iceCandidatesQueue.current.push(candidate);
+      iceCandidatesQueue.current.push(data.signal.candidate);
     }
   }
 });
