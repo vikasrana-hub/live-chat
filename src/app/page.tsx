@@ -40,11 +40,7 @@ export default function Home() {
 
           </Link>
         </div>
-        <img
-
-          alt="Video Chat Illustration"
-          className="mt-10 w-2/3 max-w-lg"
-        />
+       
       </main>
 
       <footer className="w-full py-4 bg-gray-100">
