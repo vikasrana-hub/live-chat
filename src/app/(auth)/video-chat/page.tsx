@@ -21,30 +21,35 @@ function VideoChat() {
       setPartnerId(id);
     });
 
-   socket.on("signal", async (data: SignalData) => {
+    socket.on("signal", async (data: SignalData) => {
   if (!peerRef.current) return;
 
   if ("type" in data.signal) {
     // It's an RTCSessionDescriptionInit (Offer/Answer)
-    if (data.signal.type === "offer") {
-      await peerRef.current.setRemoteDescription(data.signal);
+    const signal = data.signal as RTCSessionDescriptionInit;
+    
+    if (signal.type === "offer") {
+      await peerRef.current.setRemoteDescription(signal);
       const answer = await peerRef.current.createAnswer();
       await peerRef.current.setLocalDescription(answer);
       socket.emit("signal", { to: data.from, signal: peerRef.current.localDescription });
       processQueuedIceCandidates();
-    } else if (data.signal.type === "answer") {
-      await peerRef.current.setRemoteDescription(data.signal);
+    } else if (signal.type === "answer") {
+      await peerRef.current.setRemoteDescription(signal);
       processQueuedIceCandidates();
     }
   } else if ("candidate" in data.signal) {
     // It's an ICE candidate
+    const candidate = data.signal.candidate as RTCIceCandidateInit;
+    
     if (peerRef.current.remoteDescription) {
-      await peerRef.current.addIceCandidate(new RTCIceCandidate(data.signal.candidate));
+      await peerRef.current.addIceCandidate(new RTCIceCandidate(candidate));
     } else {
-      iceCandidatesQueue.current.push(data.signal.candidate);
+      iceCandidatesQueue.current.push(candidate);
     }
   }
 });
+
 
 
     return () => {
