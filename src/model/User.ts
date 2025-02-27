@@ -6,19 +6,8 @@ export interface Message extends Document{
     createdAt : Date
 }
 
-const MessageSchema:Schema<Message> = new Schema({
-    Content:{
-        type: String,
-        required:true
-        },
-    createdAt:{
-        type:Date,
-        required:true,
-        default:Date.now
-    }
-    
 
-})
+
 
 export interface User extends Document{
     username: string;
