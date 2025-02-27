@@ -53,7 +53,7 @@ function VerifyAccount() {
         description: "verification successful"
       })
       router.push('/sign-in')
-    } catch (error) {
+    } catch (_error) {
     
       toast({
         title: "Error",
