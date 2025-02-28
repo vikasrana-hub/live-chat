@@ -17,6 +17,11 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials: { email: string; password: string }): Promise<User | null> {
+                 if (!credentials) {
+                throw new Error("Missing credentials"); // Handle case where credentials are undefined
+               }
+
+               const { email, password } = credentials;
                 await dbConnect();
 
                 try {
