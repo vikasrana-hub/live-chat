@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/dbConnect";
 import CredentialsProvider from "next-auth/providers/credentials";
-import UserModel, { IUser } from "@/model/User"; // Assuming IUser is the type for UserModel
+import UserModel, { User } from "@/model/User"; // Assuming IUser is the type for UserModel
 import bcrypt from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
