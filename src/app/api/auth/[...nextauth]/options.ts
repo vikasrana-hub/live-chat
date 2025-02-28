@@ -17,39 +17,37 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Password", type: "password" }
             },
             async authorize(
-             credentials?: Record<"email" | "password", string> | null
-              ): Promise<User | null> {
-             {
-                 if (!credentials) {
-                throw new Error("Missing credentials"); // Handle case where credentials are undefined
-               }
+  credentials: Record<"email" | "password", string> | undefined
+): Promise<User | null> {
+  if (!credentials) {
+    throw new Error("Missing credentials"); // Handle case where credentials are undefined
+  }
 
-               const { email, password } = credentials;
-                await dbConnect();
+  const { email, password } = credentials;
+  await dbConnect();
 
-                try {
-                    const user = await UserModel.findOne({ email: credentials.email });
+  try {
+    const user = await UserModel.findOne({ email });
 
-                    console.log("User found:", user);
-                    if (!user) {
-                        console.error("No user found");
-                        throw new Error("No user found with this email");
-                    }
-                    if (!user.isVerified) {
-                        throw new Error("Please verify your account");
-                    }
+    if (!user) {
+      throw new Error("No user found with this email");
+    }
+    if (!user.isVerified) {
+      throw new Error("Please verify your account");
+    }
 
-                    const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
-                    if (isPasswordCorrect) {
-                        return user;
-                    } else {
-                        throw new Error("Please enter the correct password");
-                    }
-                } catch (err) {
-                    console.error("Authorization Error:", err);
-                    throw new Error(err instanceof Error ? err.message : "Authorization failed");
-                }
-            }
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      throw new Error("Incorrect password");
+    }
+
+    return user;
+  } catch (err) {
+    console.error("Authorization Error:", err);
+    throw new Error(err instanceof Error ? err.message : "Authorization failed");
+  }
+}
+
         })
     ],
     callbacks: {
