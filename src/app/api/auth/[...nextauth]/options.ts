@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials: { email: string; password: string }): Promise<IUser | null> {
+            async authorize(credentials: { email: string; password: string }): Promise<User | null> {
                 await dbConnect();
 
                 try {
