@@ -24,8 +24,8 @@ socket.on("signal", async (data: SignalData) => {
   if (!peerRef.current) return;
 
   // Explicitly check if data.signal is an RTCSessionDescriptionInit
-  if (typeof data.signal === "object" && "type" in data.signal) {
-    const signal = data.signal as RTCSessionDescriptionInit; // Explicitly type-cast
+  if ("type" in data.signal) {
+    const signal = data.signal as RTCSessionDescriptionInit; // Type-cast
 
     if (signal.type === "offer") {
       await peerRef.current.setRemoteDescription(signal);
@@ -38,9 +38,8 @@ socket.on("signal", async (data: SignalData) => {
       processQueuedIceCandidates();
     }
   } 
-
   // Handle ICE candidates separately
-  else if (typeof data.signal === "object" && "candidate" in data.signal) {
+  else if ("candidate" in data.signal) {
     const candidateData = data.signal as { candidate: RTCIceCandidateInit }; // Type-cast
 
     if (peerRef.current.remoteDescription) {
